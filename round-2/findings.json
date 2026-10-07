@@ -1,18 +1,351 @@
 {
-  "round": "round-2",
-  "team": "BB-XXX",
-  "queries_used": 0,
-  "claims": [
-    {
-      "type": "feature_effect",
-      "feature": "x1",
-      "direction": "increases",
-      "strength": "strong",
-      "confidence": 0.0,
-      "evidence": {
-        "query_ids": [],
-        "summary": "Replace this example claim with your own. Every claim needs evidence."
-      }
+  "project": "BLACKBOX AI 1.0 - Reverse Engineer the Intelligence",
+  "system": "Hospital Admission Triage",
+  "dataset": {
+    "rounds": ["R1", "R2"],
+    "total_queries": 126,
+    "query_range": {
+      "R1": "1-50",
+      "R2": "1-76"
     }
-  ]
+  },
+  "output": {
+    "score_range": [0.0, 1.0],
+    "decisions": ["APPROVE", "DECLINE"]
+  },
+  "findings": {
+    "age": {
+      "direction": "positive",
+      "behavior": "nonlinear_saturating",
+      "confidence": "high",
+      "evidence": [
+        {
+          "query": "R2-21",
+          "age": 18,
+          "score": 0.9063
+        },
+        {
+          "query": "R2-22",
+          "age": 52.485,
+          "score": 0.9622
+        },
+        {
+          "query": "R2-23",
+          "age": 68.73,
+          "score": 0.9755
+        },
+        {
+          "query": "R2-35",
+          "age": 73.258,
+          "score": 0.9768
+        }
+      ],
+      "conclusion": "Score generally increases with age in the tested range, with diminishing changes at higher ages."
+    },
+
+    "prior_visits": {
+      "direction": "positive",
+      "behavior": "nonlinear",
+      "confidence": "high",
+      "evidence": [
+        {
+          "query": "R2-39",
+          "prior_visits": 2,
+          "score": 0.7519
+        },
+        {
+          "query": "R2-38",
+          "prior_visits": 7.532,
+          "score": 0.8102
+        },
+        {
+          "query": "R2-40",
+          "prior_visits": 15,
+          "score": 0.9021
+        },
+        {
+          "query": "R2-25",
+          "prior_visits": 20,
+          "score": 0.9768
+        },
+        {
+          "query": "R2-26",
+          "prior_visits": 5.8,
+          "score": 0.9357
+        }
+      ],
+      "conclusion": "Higher prior visits are strongly associated with higher scores."
+    },
+
+    "recent_admissions": {
+      "direction": "negative",
+      "behavior": "nonlinear_threshold_like",
+      "confidence": "high",
+      "evidence": [
+        {
+          "query": "R2-72",
+          "recent_admissions": 0,
+          "score": 0.9769
+        },
+        {
+          "query": "R2-60",
+          "recent_admissions": 0.25,
+          "score": 0.9767
+        },
+        {
+          "query": "R2-62",
+          "recent_admissions": 0.7,
+          "score": 0.979
+        },
+        {
+          "query": "R2-29",
+          "recent_admissions": 2.56,
+          "score": 0.9541
+        },
+        {
+          "query": "R2-63",
+          "recent_admissions": 3.7,
+          "score": 0.9533
+        },
+        {
+          "query": "R2-73",
+          "recent_admissions": 5,
+          "score": 0.9372
+        }
+      ],
+      "conclusion": "Low admission counts have relatively small effects, while higher recent admissions produce a stronger score penalty."
+    },
+
+    "comorbidity_ratio": {
+      "direction": "negative",
+      "behavior": "negative_effect",
+      "confidence": "high",
+      "evidence": [
+        {
+          "comparison": "R2-54_to_R2-55",
+          "comorbidity_change": [0, 0.1],
+          "score_change": [0.9791, 0.9761],
+          "delta": -0.003
+        }
+      ],
+      "conclusion": "Increasing comorbidity reduced the score in the controlled comparison."
+    },
+
+    "dependants": {
+      "direction": "uncertain",
+      "behavior": "weak_or_interaction_dependent",
+      "confidence": "low_medium",
+      "evidence": [
+        {
+          "comparison": "R2-41_to_R2-40",
+          "dependants_change": [0.6, 1.3],
+          "score_change": [0.9021, 0.9021],
+          "delta": 0.0
+        }
+      ],
+      "conclusion": "No detectable independent effect was observed in the clean tested comparison."
+    },
+
+    "baseline_score": {
+      "direction": "non_monotonic",
+      "behavior": "nonlinear_preferred_range_possible",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "baseline_score": 723,
+          "score": 0.9785
+        },
+        {
+          "baseline_score": 805,
+          "score": 0.9791
+        },
+        {
+          "baseline_score": 816,
+          "score": 0.979,
+          "query": "R2-50"
+        },
+        {
+          "baseline_score": 852,
+          "score": 0.9772
+        },
+        {
+          "baseline_score": 900,
+          "score": 0.9768
+        }
+      ],
+      "conclusion": "Baseline score does not show a simple monotonic positive relationship with final score."
+    },
+
+    "requested_beds": {
+      "direction": "weak_or_negligible_in_tested_regions",
+      "behavior": "conditional_possible",
+      "confidence": "low",
+      "evidence": [
+        {
+          "comparison": "R2-65_to_R2-66",
+          "requested_beds_change": [1, 5],
+          "score_change": [0.9791, 0.9791],
+          "delta": 0.0
+        },
+        {
+          "comparison": "R2-13_to_R2-14",
+          "requested_beds_change": [10, 2],
+          "score_change": [0.8079, 0.8079],
+          "delta": 0.0
+        }
+      ],
+      "conclusion": "Large changes in requested beds produced no detectable score change in the tested configurations."
+    },
+
+    "vitals_index": {
+      "direction": "weak_or_negligible_in_tested_regions",
+      "behavior": "conditional_possible",
+      "confidence": "low",
+      "evidence": [
+        {
+          "comparison": "R2-44_to_R2-45",
+          "vitals_change": [0.153, 45],
+          "score_change": [0.915, 0.915],
+          "delta": 0.0
+        },
+        {
+          "comparison": "R2-67_to_R2-68",
+          "vitals_values": [50, 25],
+          "scores": [0.9769, 0.9769],
+          "delta": 0.0
+        }
+      ],
+      "conclusion": "Vitals showed no detectable independent effect in the tested configurations."
+    },
+
+    "ward": {
+      "direction": "categorical",
+      "behavior": "categorical_effect",
+      "confidence": "high",
+      "evidence": [
+        {
+          "comparison": "R2-76_to_R2-75",
+          "ward_change": ["A", "B"],
+          "score_change": [0.9207, 0.9239],
+          "delta": 0.0032
+        },
+        {
+          "query_group": "R1-28_to_R1-33",
+          "observed_scores": {
+            "A": 0.9716,
+            "B": 0.9728,
+            "C": 0.9698,
+            "D": 0.9606
+          }
+        }
+      ],
+      "conclusion": "Ward affects the score, with B performing best and D lowest in one controlled configuration."
+    },
+
+    "years_registered": {
+      "direction": "nonlinear",
+      "behavior": "preferred_range_possible",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "years_registered": 11.8,
+          "score": 0.9694
+        },
+        {
+          "years_registered": 14.6,
+          "score": 0.9738
+        },
+        {
+          "years_registered": 20,
+          "score": 0.9685
+        },
+        {
+          "years_registered": 22,
+          "score": 0.9695
+        },
+        {
+          "years_registered": 40,
+          "score": 0.9303
+        }
+      ],
+      "conclusion": "Years registered does not behave as a simple monotonic variable in the tested data."
+    }
+  },
+
+  "decision_findings": {
+    "decline_examples": [
+      {
+        "query": "R1-9",
+        "score": 0.3871,
+        "decision": "DECLINE"
+      },
+      {
+        "query": "R1-44",
+        "score": 0.053,
+        "decision": "DECLINE"
+      }
+    ],
+    "approve_examples_below_0_8": [
+      {
+        "query": "R2-37",
+        "score": 0.5777,
+        "decision": "APPROVE"
+      },
+      {
+        "query": "R1-8",
+        "score": 0.6767,
+        "decision": "APPROVE"
+      },
+      {
+        "query": "R1-1",
+        "score": 0.6824,
+        "decision": "APPROVE"
+      },
+      {
+        "query": "R2-1",
+        "score": 0.7681,
+        "decision": "APPROVE"
+      }
+    ],
+    "conclusion": "The exact APPROVE/DECLINE threshold cannot be determined from the collected results alone."
+  },
+
+  "model_structure": {
+    "type": "nonlinear_black_box",
+    "likely_properties": [
+      "nonlinear transformations",
+      "categorical ward effect",
+      "saturation",
+      "risk penalties",
+      "possible parameter interactions"
+    ],
+    "not_supported": [
+      "exact mathematical formula",
+      "exact individual coefficients",
+      "exact decision threshold"
+    ]
+  },
+
+  "parameter_summary": {
+    "strong_positive": [
+      "age",
+      "prior_visits"
+    ],
+    "strong_negative": [
+      "recent_admissions",
+      "comorbidity_ratio"
+    ],
+    "categorical": [
+      "ward"
+    ],
+    "nonlinear_or_complex": [
+      "baseline_score",
+      "years_registered"
+    ],
+    "weak_or_uncertain": [
+      "dependants",
+      "requested_beds",
+      "vitals_index"
+    ]
+  }
 }
